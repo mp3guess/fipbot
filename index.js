@@ -6,7 +6,7 @@ const {
   Keyboard,
   InlineKeyboard,
 } = require("grammy"); //Import from grammy library
-const { getRandomQuestion,getCorrectAnswer } = require("./utils"); //Import from ./utils.js file getRandomeQuestion function
+const { getRandomQuestion, getCorrectAnswer } = require("./utils"); //Import from ./utils.js file getRandomeQuestion function
 
 const bot = new Bot(process.env.BOT_API_KEY); //Creating an instance of the `Bot` class
 
@@ -32,9 +32,9 @@ bot.command("start", async (ctx) => {
 });
 
 //Handling other messages
-bot.hears(["HTML", "CSS", "JavaScript", "React","Random Question"], async (ctx) => {
+bot.hears(["HTML", "CSS", "JavaScript", "React", "Random Question"], async (ctx) => {
   const topic = ctx.message.text.toLowerCase(); //Getting the topic from the message
-  const {question, questionTopic} = getRandomQuestion(topic); //Getting a random question from the topic
+  const { question, questionTopic } = getRandomQuestion(topic); //Getting a random question from the topic
 
   let inlineKeyboard;
 
@@ -65,24 +65,24 @@ bot.hears(["HTML", "CSS", "JavaScript", "React","Random Question"], async (ctx) 
   await ctx.reply(question.text, {
     reply_markup: inlineKeyboard,
   });
-  },
+},
 );
 
 bot.on("callback_query:data", async (ctx) => {
   const callbackData = JSON.parse(ctx.callbackQuery.data);
-  
-  if (!callbackData.type.includes('option')){
+
+  if (!callbackData.type.includes('option')) {
     const answer = getCorrectAnswer(callbackData.type, callbackData.questionId);
-  
+
     await ctx.reply(answer, {
       parse_mode: "HTML",
       disable_web_page_preview: true,
-  });
-  await ctx.answerCallbackQuery();
-  return;
+    });
+    await ctx.answerCallbackQuery();
+    return;
   }
 
-  if (callbackData.isCorrect){
+  if (callbackData.isCorrect) {
     await ctx.reply("Correct answer! 🎉");
     await ctx.answerCallbackQuery();
     return;
